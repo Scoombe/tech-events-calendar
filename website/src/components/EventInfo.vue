@@ -35,8 +35,8 @@
                 <octicon name="location"></octicon>
               </span>
               <span class="info-text">
-                <a target="_blank" :href="event.location.url">{{event.location.title}}</a>
-                <span class="info-extended text-gray f6" v-if="event.location.detail">{{event.location.detail}}</span>
+                <a target="_blank" :href="event.location.url" v-html="markdown(event.location.title)"></a>
+                <span class="info-extended text-gray f6" v-if="event.location.detail" v-html="markdown(event.location.detail)"></span>
               </span>
             </li>
           </ul>
@@ -52,7 +52,7 @@
         </nav>
       </div>
       <div class="col-lg-9 col-md-8 col-12 float-left">
-        <div class="markdown-body" v-html="descriptionHtml"></div>
+        <div class="markdown-body" v-html="markdown(event.description) +' \n  \n '+ markdown(event.summary)"> </div>
         <p class="text-right mt-4">
           <a :href="editLink" class="btn btn-secondary">Edit on GitHub</a>
         </p>
@@ -65,7 +65,6 @@
 import Octicon from 'vue-octicon/components/Octicon.vue'
 import EventTags from './EventTags'
 import Markdown from './Markdown'
-var markdown = Markdown.markdown
 
 export default {
   props: [ 'event' ],
@@ -93,6 +92,9 @@ export default {
     },
     formatTime (t) {
       return t.hour + ':' + (t.minute < 10 ? '0' : '') + t.minute
+    },
+    markdown (m) {
+      return Markdown.markdown(m)
     }
   },
   computed: {
@@ -107,12 +109,6 @@ export default {
     },
     href () {
       return `/event/${this.event.id}`
-    },
-    descriptionHtml () {
-      return  Markdown.markdown([this.event.description,this.event.summary])
-    },
-    location(){
-      return Markdown.markdown([this.event.location])
     }
   },
   components: {

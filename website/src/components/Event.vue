@@ -14,8 +14,7 @@
           <router-link :to="href">{{event.title}}</router-link>
         </strong>
       </div>
-      <div class="event-summary">
-        {{event.summary}}
+      <div class="event-summary" v-html="markdown(event.summary)">
       </div>
       <div class="mt-1">
         <event-tags :event="event"></event-tags>
@@ -37,6 +36,9 @@ export default {
     day (d) {
       const date = new Date(d.year, d.month - 1, d.date)
       return ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'][date.getDay()]
+    },
+    markdown (m) {
+      return Markdown.markdown(m)
     }
   },
   computed: {
@@ -45,9 +47,6 @@ export default {
     },
     endDate () {
       return this.formatDate(this.event.end)
-    },
-    summary (){
-      return Markdown.markdown([this.event.summary]);
     },
     href () {
       return `/event/${this.event.id}`
